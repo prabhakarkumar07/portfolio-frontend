@@ -1,14 +1,24 @@
+/**
+ * App.js - Root component with router and context providers
+ */
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+
+// Layout
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+
+// Public Pages
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ProjectsPage from './pages/ProjectsPage';
 import ContactPage from './pages/ContactPage';
+
+// Admin Pages
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProjects from './pages/admin/AdminProjects';
@@ -22,6 +32,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <Router>
+          {/* Toast notifications */}
           <Toaster
             position="top-right"
             toastOptions={{
@@ -34,6 +45,7 @@ function App() {
           />
 
           <Routes>
+            {/* ── Public Routes ─────────────────────────── */}
             <Route
               path="/*"
               element={
@@ -53,6 +65,7 @@ function App() {
               }
             />
 
+            {/* ── Admin Routes ───────────────────────────── */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route
               path="/admin/*"
