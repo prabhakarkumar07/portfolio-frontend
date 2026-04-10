@@ -9,10 +9,12 @@ import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';
 import { projectsAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import Section from '../components/Section';
+import useProfile from '../hooks/useProfile';
 
 const categories = ['All', 'Web', 'Mobile', 'API', 'ML/AI', 'DevOps', 'Other'];
 
 const ProjectsPage = () => {
+  const { projectsPageTag, projectsPageTitle, projectsPageSubtitle } = useProfile();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -40,10 +42,10 @@ const ProjectsPage = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/50">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="tag mb-4 inline-flex">My Work</span>
-            <h1 className="section-title mb-4">All Projects</h1>
+            <span className="tag mb-4 inline-flex">{projectsPageTag || 'My Work'}</span>
+            <h1 className="section-title mb-4">{projectsPageTitle || 'All Projects'}</h1>
             <p className="section-subtitle max-w-2xl mx-auto">
-              A collection of things I've built, from weekend side projects to production systems serving real users.
+              {projectsPageSubtitle || "A collection of things I've built, from weekend side projects to production systems serving real users."}
             </p>
           </motion.div>
         </div>

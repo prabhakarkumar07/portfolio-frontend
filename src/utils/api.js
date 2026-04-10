@@ -55,6 +55,7 @@ export const contactAPI = {
 export const profileAPI = {
   get: () => api.get('/profile'),
   update: (data) => api.put('/admin/profile', data),
+  deleteAsset: (type) => api.delete(`/admin/profile/assets/${type}`),
   uploadPicture: (file) => {
     const form = new FormData();
     form.append('profileImage', file);

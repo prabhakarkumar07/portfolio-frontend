@@ -7,10 +7,12 @@ import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { contactAPI } from '../utils/api';
 import Section from '../components/Section';
+import useProfile from '../hooks/useProfile';
 
 const initialForm = { name: '', email: '', subject: '', message: '' };
 
 const ContactPage = () => {
+  const { email, location, githubUrl, linkedinUrl, contactIntro, availabilityStatus, availabilityDetails } = useProfile();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -24,8 +26,8 @@ const ContactPage = () => {
         </svg>
       ),
       label: 'Email',
-      value: 'your.email@example.com',
-      href: 'mailto:your.email@example.com',
+      value: email || 'your.email@example.com',
+      href: `mailto:${email || 'your.email@example.com'}`,
     },
     {
       icon: (
@@ -34,8 +36,8 @@ const ContactPage = () => {
         </svg>
       ),
       label: 'GitHub',
-      value: 'github.com/yourusername',
-      href: 'https://github.com/yourusername',
+      value: githubUrl?.replace(/^https?:\/\//, '') || '',
+      href: githubUrl,
     },
     {
       icon: (
@@ -44,10 +46,10 @@ const ContactPage = () => {
         </svg>
       ),
       label: 'LinkedIn',
-      value: 'linkedin.com/in/yourusername',
-      href: 'https://linkedin.com/in/yourusername',
+      value: linkedinUrl?.replace(/^https?:\/\//, '') || '',
+      href: linkedinUrl,
     },
-  ];
+  ].filter((item) => item.href);
 
   // ── Client-side validation ────────────────────────────────────────────────
   const validate = () => {
@@ -122,7 +124,7 @@ const ContactPage = () => {
                 Contact Information
               </h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                I'm based in Your City and available for remote work worldwide. Typical response time is within 24 hours.
+                {contactIntro || `I'm based in ${location || 'Your City'} and available for remote work worldwide. Typical response time is within 24 hours.`}
               </p>
             </div>
 
@@ -150,10 +152,10 @@ const ContactPage = () => {
             <div className="card p-4 border-l-4 border-emerald-400">
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="font-medium text-slate-900 dark:text-white text-sm">Available for work</span>
+                <span className="font-medium text-slate-900 dark:text-white text-sm">{availabilityStatus || 'Available for work'}</span>
               </div>
               <p className="text-slate-500 dark:text-slate-400 text-xs">
-                Currently open to full-time roles and freelance projects.
+                {availabilityDetails || 'Currently open to full-time roles and freelance projects.'}
               </p>
             </div>
           </motion.div>

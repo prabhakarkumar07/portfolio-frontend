@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { adminAPI } from '../../utils/api';
 import useFetch from '../../hooks/useFetch';
@@ -42,6 +43,8 @@ const AdminDashboard = () => {
   const completenessItems = [
     { label: 'Profile picture', done: profile.hasProfile, link: '/admin/profile' },
     { label: 'Resume uploaded', done: profile.hasResume, link: '/admin/profile' },
+    { label: 'Homepage stats added', done: (profile.stats?.length ?? 0) > 0, link: '/admin/profile' },
+    { label: 'Skills added', done: (profile.skillCategories?.length ?? 0) > 0, link: '/admin/profile' },
     { label: 'Projects added', done: (projectsData?.total ?? 0) > 0, link: '/admin/projects' },
   ];
   const completePct = Math.round((completenessItems.filter((i) => i.done).length / completenessItems.length) * 100);
@@ -116,7 +119,7 @@ const AdminDashboard = () => {
             View All Messages
           </Link>
           <Link to="/admin/profile" className="btn-ghost text-sm">
-            Profile & Resume →
+            Manage Site Content →
           </Link>
           <a href="/" target="_blank" rel="noopener noreferrer" className="btn-ghost text-sm">
             View Portfolio ↗

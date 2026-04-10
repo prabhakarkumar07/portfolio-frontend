@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line
 import { motion } from 'framer-motion';
 import ProjectCard from '../components/ProjectCard';
 import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';
@@ -39,6 +40,14 @@ const HomePage = () => {
   const {
     fullName,
     headline,
+    heroDescription,
+    availabilityBadge,
+    availabilityStatus,
+    homeCtaTitle,
+    homeCtaDescription,
+    homePrimaryCtaText,
+    homeSecondaryCtaText,
+    stats,
     profilePicUrl,
     resumeUrl,
     hasResume,
@@ -46,6 +55,7 @@ const HomePage = () => {
   const [imgError, setImgError] = React.useState(false);
   const displayName = fullName || 'Your Name';
   const displayHeadline = headline || 'Full-Stack Developer';
+  const displayStats = stats.length > 0 ? stats : defaultStats;
 
   const featuredProjects = data?.data || [];
 
@@ -72,7 +82,7 @@ const HomePage = () => {
               <motion.div variants={fadeUp} className="mb-4">
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-950 border border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300 text-sm font-medium font-mono">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Available for opportunities
+                  {availabilityBadge || 'Available for opportunities'}
                 </span>
               </motion.div>
 
@@ -90,7 +100,7 @@ const HomePage = () => {
                 variants={fadeUp}
                 className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-lg"
               >
-                I craft high-performance web applications with React and Node.js. Passionate about clean architecture, great UX, and solving complex problems with elegant code.
+                {heroDescription || 'I craft high-performance web applications with React and Node.js. Passionate about clean architecture, great UX, and solving complex problems with elegant code.'}
               </motion.p>
 
               {/* Skill Tags */}
@@ -103,13 +113,13 @@ const HomePage = () => {
               {/* CTA Buttons */}
               <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
                 <Link to="/projects" className="btn-primary">
-                  View My Work
+                  {homePrimaryCtaText || 'View My Work'}
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Link>
                 <Link to="/contact" className="btn-secondary">
-                  Get In Touch
+                  {homeSecondaryCtaText || 'Get In Touch'}
                 </Link>
               </motion.div>
             </motion.div>
@@ -123,13 +133,7 @@ const HomePage = () => {
             >
               {/* Profile photo frame */}
               <div className="relative">
-                {/* Rotating ring */}
-                <svg className="absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] text-primary-300/30 dark:text-primary-700/30" viewBox="0 0 200 200">
-                  <motion.circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" strokeWidth="1.5"
-                    strokeDasharray="10 6" animate={{ rotate: 360 }}
-                    transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                    style={{ transformOrigin: '100px 100px' }} />
-                </svg>
+               
 
                 {/* Glow */}
                 <div className="absolute inset-4 rounded-2xl gradient-bg opacity-20 blur-xl" />
@@ -137,7 +141,7 @@ const HomePage = () => {
                 {/* Photo or initials */}
                 <div className="relative w-72 h-72 rounded-3xl overflow-hidden border-4 border-white dark:border-slate-900 shadow-2xl shadow-primary-500/25 z-10">
                   {profilePicUrl && !imgError ? (
-                    <img src={profilePicUrl} alt="Profile" className="w-full h-full object-cover object-top"
+                    <img src={profilePicUrl} alt="Profile" className="w-full h-full object-cover object-center"
                       onError={() => setImgError(true)} />
                   ) : (
                     <div className="w-full h-full gradient-bg flex flex-col items-center justify-center gap-2">
@@ -153,14 +157,14 @@ const HomePage = () => {
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}
                   className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 shadow-lg flex items-center gap-2 whitespace-nowrap">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Open to opportunities</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{availabilityStatus || 'Open to opportunities'}</span>
                 </motion.div>
               </div>
 
               {/* Stat pills row */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }}
                 className="flex gap-3 mt-4">
-                {defaultStats.slice(0, 3).map((s) => (
+                {displayStats.slice(0, 3).map((s) => (
                   <div key={s.label} className="card px-5 py-3 text-center">
                     <p className="font-display font-bold text-xl text-primary-600 dark:text-primary-400">{s.value}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">{s.label}</p>
@@ -205,7 +209,7 @@ const HomePage = () => {
       <section className="py-16 bg-slate-900 dark:bg-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {defaultStats.map((stat, i) => (
+            {displayStats.map((stat, i) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
@@ -271,16 +275,16 @@ const HomePage = () => {
           >
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_50%,white,transparent)]" />
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 relative z-10">
-              Let's build something great together
+              {homeCtaTitle || "Let's build something great together"}
             </h2>
             <p className="text-white/80 mb-8 text-lg relative z-10">
-              I'm currently available for freelance work and full-time opportunities.
+              {homeCtaDescription || "I'm currently available for freelance work and full-time opportunities."}
             </p>
             <Link
               to="/contact"
               className="inline-flex items-center gap-2 px-8 py-3 bg-white text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors shadow-lg relative z-10"
             >
-              Start a Conversation
+              {homePrimaryCtaText || 'Start a Conversation'}
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
