@@ -23,15 +23,8 @@ const stagger = {
 };
 
 // ── Skill Tags shown on hero ───────────────────────────────────────────────────
-const skills = ['React', 'Node.js', 'Express', 'MongoDB', 'TypeScript', 'Docker', 'AWS', 'GraphQL'];
-
 // ── Stats ─────────────────────────────────────────────────────────────────────
-const defaultStats = [
-  { label: 'Years Experience', value: '5+' },
-  { label: 'Projects Shipped', value: '40+' },
-  { label: 'Happy Clients', value: '25+' },
-  { label: 'Open Source Contributions', value: '100+' },
-];
+const defaultStats = [];
 
 const HomePage = () => {
   const { data, loading, error, refetch } = useFetch(
@@ -49,20 +42,28 @@ const HomePage = () => {
     homeSecondaryCtaText,
     stats,
     profilePicUrl,
-    resumeUrl,
     hasResume,
+    skillCategories,
   } = useProfile();
   const [imgError, setImgError] = React.useState(false);
   const displayName = fullName || 'Your Name';
-  const displayHeadline = headline || 'Full-Stack Developer';
+  const displayHeadline = headline || '';
   const displayStats = stats.length > 0 ? stats : defaultStats;
+  const apiBase = import.meta.env.VITE_API_URL || '/api';
 
   const featuredProjects = data?.data || [];
+  const derivedSkills = skillCategories.flatMap((category) =>
+    (category.skills || [])
+      .map((skill) => skill?.name)
+      .filter(Boolean)
+  );
+  const heroSkills = Array.from(new Set(derivedSkills)).slice(0, 10);
+  const resumeHref = hasResume ? `${apiBase}/profile/resume` : null;
 
   return (
     <div>
       {/* ── HERO SECTION ──────────────────────────────────────────────────── */}
-      <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+      <section className="relative min-h-[78vh] flex items-center overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 -right-32 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl" />
@@ -70,7 +71,7 @@ const HomePage = () => {
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:4rem_4rem]" />
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-14">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
             {/* Left — Text */}
@@ -93,21 +94,27 @@ const HomePage = () => {
                 Hi, I'm{' '}
                 <span className="gradient-text">{displayName}</span>
                 <br />
-                <span className="text-slate-700 dark:text-slate-300 text-4xl md:text-5xl">{displayHeadline}</span>
+                <span className="text-slate-700 dark:text-slate-300 text-4xl md:text-5xl">
+                  {displayHeadline || 'Update your headline in Admin'}
+                </span>
               </motion.h1>
 
               <motion.p
                 variants={fadeUp}
                 className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 max-w-lg"
               >
-                {heroDescription || 'I craft high-performance web applications with React and Node.js. Passionate about clean architecture, great UX, and solving complex problems with elegant code.'}
+                {heroDescription || 'Update your hero description in the Admin dashboard.'}
               </motion.p>
 
               {/* Skill Tags */}
               <motion.div variants={fadeUp} className="flex flex-wrap gap-2 mb-10">
-                {skills.map((skill) => (
-                  <span key={skill} className="tag">{skill}</span>
-                ))}
+                {heroSkills.length > 0 ? (
+                  heroSkills.map((skill) => (
+                    <span key={skill} className="tag">{skill}</span>
+                  ))
+                ) : (
+                  <span className="text-sm text-slate-500 dark:text-slate-400">Add skills in Admin to show tags.</span>
+                )}
               </motion.div>
 
               {/* CTA Buttons */}
@@ -164,18 +171,24 @@ const HomePage = () => {
               {/* Stat pills row */}
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1 }}
                 className="flex gap-3 mt-4">
-                {displayStats.slice(0, 3).map((s) => (
-                  <div key={s.label} className="card px-5 py-3 text-center">
-                    <p className="font-display font-bold text-xl text-primary-600 dark:text-primary-400">{s.value}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{s.label}</p>
+                {displayStats.slice(0, 3).length > 0 ? (
+                  displayStats.slice(0, 3).map((s) => (
+                    <div key={s.label} className="card px-5 py-3 text-center">
+                      <p className="font-display font-bold text-xl text-primary-600 dark:text-primary-400">{s.value}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{s.label}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="card px-5 py-3 text-center text-xs text-slate-500 dark:text-slate-400">
+                    Add stats in Admin to show here.
                   </div>
-                ))}
+                )}
               </motion.div>
 
               {/* Resume quick-link */}
-              {hasResume && resumeUrl && (
+              {hasResume && resumeHref && (
                 <motion.a initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3 }}
-                  href={resumeUrl} download target="_blank" rel="noopener noreferrer"
+                  href={resumeHref} target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-medium">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -208,21 +221,27 @@ const HomePage = () => {
       {/* ── STATS ─────────────────────────────────────────────────────────── */}
       <section className="py-16 bg-slate-900 dark:bg-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {displayStats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center"
-              >
-                <p className="font-display text-4xl font-bold text-white mb-1">{stat.value}</p>
-                <p className="text-slate-400 text-sm">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
+          {displayStats.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              {displayStats.map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="text-center"
+                >
+                  <p className="font-display text-4xl font-bold text-white mb-1">{stat.value}</p>
+                  <p className="text-slate-400 text-sm">{stat.label}</p>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-slate-400 text-sm">
+              Add stats in Admin to show your highlights here.
+            </div>
+          )}
         </div>
       </section>
 
@@ -284,7 +303,7 @@ const HomePage = () => {
               to="/contact"
               className="inline-flex items-center gap-2 px-8 py-3 bg-white text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-colors shadow-lg relative z-10"
             >
-              {homePrimaryCtaText || 'Start a Conversation'}
+              {homeSecondaryCtaText || 'Start a Conversation'}
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

@@ -72,6 +72,11 @@ export const profileAPI = {
   },
 };
 
+export const blogAPI = {
+  getAll: (params = {}) => api.get('/blogs', { params }),
+  getBySlug: (slug) => api.get(`/blogs/${slug}`),
+};
+
 export const adminAPI = {
   login: (credentials) => api.post('/admin/login', credentials),
   getMe: () => api.get('/admin/me'),
@@ -83,6 +88,19 @@ export const adminAPI = {
   getMessages: (params = {}) => api.get('/admin/messages', { params }),
   markAsRead: (id) => api.patch(`/admin/messages/${id}/read`),
   deleteMessage: (id) => api.delete(`/admin/messages/${id}`),
+
+  getBlogs: (params = {}) => api.get('/admin/blogs', { params }),
+  getBlog: (id) => api.get(`/admin/blogs/${id}`),
+  createBlog: (data) => api.post('/admin/blogs', data),
+  updateBlog: (id, data) => api.put(`/admin/blogs/${id}`, data),
+  deleteBlog: (id) => api.delete(`/admin/blogs/${id}`),
+  uploadBlogImage: (file) => {
+    const form = new FormData();
+    form.append('image', file);
+    return api.post('/admin/blogs/image', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };
 
 export default api;

@@ -1369,13 +1369,11 @@ const ResumeCard = ({ url, hasResume, onUpload }) => {
     setUploading(true);
 
     try {
-      const res = await profileAPI.uploadResume(file);
-
-      const resumeUrl = res.data.resumeUrl; // ✅ FIXED
+      await profileAPI.uploadResume(file);
 
       toast.success("Resume uploaded! ✅");
 
-      onUpload(resumeUrl); // ✅ now works
+      onUpload();
     } catch (err) {
       toast.error(err.response?.data?.message || "Upload failed");
     } finally {
@@ -1530,6 +1528,8 @@ const ResumeCard = ({ url, hasResume, onUpload }) => {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 const AdminProfile = () => {
   const profile = useProfile();
+  const apiBase = import.meta.env.VITE_API_URL || "/api";
+  const resumeHref = profile.hasResume ? `${apiBase}/profile/resume` : "";
 
   return (
     <div className="max-w-3xl space-y-8">
@@ -1662,11 +1662,9 @@ const AdminProfile = () => {
         transition={{ delay: 0.18 }}
       >
         <ResumeCard
-          url={profile.resumeUrl}
+          url={resumeHref}
           hasResume={profile.hasResume}
-         onUpload={() => {
-  profile.refresh();
-}}
+          onUpload={profile.refresh}
         />
       </motion.div>
     </div>

@@ -32,10 +32,12 @@ const AdminDashboard = () => {
   const { data: projectsData, loading: pLoading } = useFetch(() => adminAPI.getProjects({ limit: 1 }));
   const { data: messagesData, loading: mLoading } = useFetch(() => adminAPI.getMessages({ limit: 1 }));
   const { data: unreadData } = useFetch(() => adminAPI.getMessages({ isRead: false, limit: 5 }));
+  const { data: blogsData } = useFetch(() => adminAPI.getBlogs({ limit: 1 }));
   const profile = useProfile();
 
   const totalProjects = projectsData?.total ?? '—';
   const totalMessages = messagesData?.total ?? '—';
+  const totalBlogs = blogsData?.total ?? '—';
   const unreadCount = messagesData?.unreadCount ?? '—';
   const recentMessages = unreadData?.data || [];
 
@@ -46,6 +48,7 @@ const AdminDashboard = () => {
     { label: 'Homepage stats added', done: (profile.stats?.length ?? 0) > 0, link: '/admin/profile' },
     { label: 'Skills added', done: (profile.skillCategories?.length ?? 0) > 0, link: '/admin/profile' },
     { label: 'Projects added', done: (projectsData?.total ?? 0) > 0, link: '/admin/projects' },
+    { label: 'Blog posts added', done: (blogsData?.total ?? 0) > 0, link: '/admin/blogs' },
   ];
   const completePct = Math.round((completenessItems.filter((i) => i.done).length / completenessItems.length) * 100);
 
@@ -59,10 +62,11 @@ const AdminDashboard = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <StatCard label="Total Projects" value={totalProjects} icon="🗂️" color="bg-primary-50 dark:bg-primary-950" delay={0} />
         <StatCard label="Messages" value={totalMessages} icon="✉️" color="bg-blue-50 dark:bg-blue-950" delay={0.1} />
-        <StatCard label="Unread" value={unreadCount} icon="🔔" color="bg-amber-50 dark:bg-amber-950" delay={0.2} />
+        <StatCard label="Blogs" value={totalBlogs} icon="📝" color="bg-emerald-50 dark:bg-emerald-950" delay={0.2} />
+        <StatCard label="Unread" value={unreadCount} icon="🔔" color="bg-amber-50 dark:bg-amber-950" delay={0.3} />
       </div>
 
       {/* Profile Completeness */}
@@ -114,6 +118,9 @@ const AdminDashboard = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Add New Project
+          </Link>
+          <Link to="/admin/blogs" className="btn-secondary text-sm">
+            Add New Blog
           </Link>
           <Link to="/admin/messages" className="btn-secondary text-sm">
             View All Messages

@@ -29,6 +29,16 @@ const navItems = [
     ),
   },
   {
+    path: '/admin/blogs',
+    label: 'Blogs',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 4h9a2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 8h6M8 12h6M8 16h4" />
+      </svg>
+    ),
+  },
+  {
     path: '/admin/messages',
     label: 'Messages',
     icon: (

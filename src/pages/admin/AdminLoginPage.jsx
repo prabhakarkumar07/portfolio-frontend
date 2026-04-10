@@ -94,7 +94,7 @@ const AdminLoginPage = () => {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="admin@portfolio.com"
+                placeholder="email@gmail.com"
                 autoComplete="email"
                 className={`w-full px-4 py-3 rounded-xl bg-slate-800 border text-white placeholder-slate-500
                   focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all
@@ -163,13 +163,7 @@ const AdminLoginPage = () => {
           </p>
         </div>
 
-        {/* Demo hint */}
-        <div className="mt-4 p-3 rounded-xl bg-slate-900/50 border border-slate-800 text-center">
-          <p className="text-xs text-slate-500">
-            Demo: <span className="font-mono text-slate-400">admin@portfolio.com</span> /{' '}
-            <span className="font-mono text-slate-400">Admin@123</span>
-          </p>
-        </div>
+       
       </motion.div>
     </div>
   );

@@ -17,125 +17,65 @@ import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import useProfile from '../hooks/useProfile';
 
-const defaultSkillCategories = [
-  {
-    name: 'Frontend',
-    icon: '🎨',
-    skills: [
-      { name: 'React / Next.js', level: 95 },
-      { name: 'TypeScript', level: 85 },
-      { name: 'Tailwind CSS', level: 90 },
-      { name: 'Framer Motion', level: 80 },
-    ],
-  },
-  {
-    name: 'Backend',
-    icon: '⚙️',
-    skills: [
-      { name: 'Node.js / Express', level: 92 },
-      { name: 'Java / Spring Boot', level: 78 },
-      { name: 'REST & GraphQL APIs', level: 88 },
-      { name: 'WebSockets', level: 75 },
-    ],
-  },
-  {
-    name: 'Database',
-    icon: '🗄️',
-    skills: [
-      { name: 'MongoDB / Mongoose', level: 88 },
-      { name: 'PostgreSQL', level: 82 },
-      { name: 'Redis', level: 70 },
-      { name: 'Elasticsearch', level: 65 },
-    ],
-  },
-  {
-    name: 'DevOps & Tools',
-    icon: '🚀',
-    skills: [
-      { name: 'Docker / Kubernetes', level: 75 },
-      { name: 'AWS / GCP', level: 72 },
-      { name: 'CI/CD (GitHub Actions)', level: 80 },
-      { name: 'Linux / Bash', level: 85 },
-    ],
-  },
-];
+const iconMap = {
+  backend: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 7c0-2 4-3 8-3s8 1 8 3-4 3-8 3-8-1-8-3z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 7v5c0 2 4 3 8 3s8-1 8-3V7" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 12v5c0 2 4 3 8 3s8-1 8-3v-5" />
+    </svg>
+  ),
+  frontend: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 5h16M4 9h16M4 13h10M4 17h6" />
+    </svg>
+  ),
+  database: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 6c0-2 4-3 8-3s8 1 8 3-4 3-8 3-8-1-8-3z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M4 6v6c0 2 4 3 8 3s8-1 8-3V6" />
+    </svg>
+  ),
+  cloud: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M7 18a4 4 0 010-8 5 5 0 019.5-1.5A3.5 3.5 0 0117.5 18H7z" />
+    </svg>
+  ),
+  education: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M3 7l9-4 9 4-9 4-9-4z" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M7 10v4c0 2.2 3.6 4 5 4s5-1.8 5-4v-4" />
+    </svg>
+  ),
+  experience: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M8 7V5h8v2M4 9h16v10a2 2 0 01-2 2H6a2 2 0 01-2-2V9z" />
+    </svg>
+  ),
+  focus: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <circle cx="12" cy="12" r="3" strokeWidth={1.6} />
+    </svg>
+  ),
+  location: (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.6} d="M12 21s6-6.5 6-11a6 6 0 10-12 0c0 4.5 6 11 6 11z" />
+      <circle cx="12" cy="10" r="2.5" strokeWidth={1.6} />
+    </svg>
+  ),
+};
 
-const defaultExperiences = [
-  {
-    title: 'Senior Full-Stack Developer',
-    company: 'TechCorp Solutions',
-    period: '2022 – Present',
-    description:
-      'Lead developer on a team of 6, architecting microservices and React dashboards for enterprise clients. Reduced API response time by 60% through caching and query optimization.',
-    tech: ['React', 'Node.js', 'MongoDB', 'Docker', 'AWS'],
-  },
-  {
-    title: 'Full-Stack Developer',
-    company: 'Startup XYZ',
-    period: '2020 – 2022',
-    description:
-      'Built and shipped a SaaS analytics platform from scratch. Implemented real-time dashboards with WebSockets and designed the entire backend architecture.',
-    tech: ['Vue.js', 'Express', 'PostgreSQL', 'Socket.io'],
-  },
-  {
-    title: 'Junior Web Developer',
-    company: 'Digital Agency',
-    period: '2019 – 2020',
-    description:
-      'Developed responsive websites and e-commerce platforms for 20+ clients. Gained deep experience in frontend performance optimization.',
-    tech: ['HTML/CSS', 'JavaScript', 'WordPress', 'PHP'],
-  },
-];
+const renderIcon = (value) => {
+  if (!value) return null;
+  const key = String(value).toLowerCase().trim();
+  return iconMap[key] || <span className="text-xs font-semibold uppercase tracking-wide">{value}</span>;
+};
 
-const defaultCareerJourney = [
-  {
-    year: '2018',
-    title: 'Beginning the Journey',
-    subtitle: 'Learning by building',
-    description:
-      'Started exploring web development fundamentals, creating simple pages, and discovering how design, logic, and interactivity work together on the web.',
-    accent: 'from-primary-500 to-sky-400',
-  },
-  {
-    year: '2019',
-    title: 'Building the Basics',
-    subtitle: 'Practice and consistency',
-    description:
-      'Moved past tutorials into real project practice, improving HTML, CSS, JavaScript, and responsive thinking through hands-on experimentation and iteration.',
-    accent: 'from-sky-500 to-emerald-400',
-  },
-  {
-    year: '2020',
-    title: 'Going Full Stack',
-    subtitle: 'Frontend met backend',
-    description:
-      'Expanded from interface work into APIs, databases, and deployment, learning how to connect polished user experiences with reliable backend systems.',
-    accent: 'from-emerald-500 to-lime-400',
-  },
-  {
-    year: '2022',
-    title: 'Professional Growth',
-    subtitle: 'Shipping for real users',
-    description:
-      'Focused more on production-grade development, cleaner architecture, performance, reusable components, and building products with practical business impact.',
-    accent: 'from-amber-400 to-orange-500',
-  },
-  {
-    year: 'Now',
-    title: 'Career With Purpose',
-    subtitle: 'Modern product engineering',
-    description:
-      'Continuing to grow as a full-stack developer by creating scalable products, refining system thinking, and delivering experiences that feel intentional and useful.',
-    accent: 'from-fuchsia-500 to-primary-500',
-  },
-];
-
-const defaultResumeHighlights = [
-  { icon: '🎓', label: 'Education', value: 'B.Tech Computer Science', sub: 'XYZ University · 2019' },
-  { icon: '🏆', label: 'Certifications', value: 'AWS Certified Developer', sub: 'Amazon Web Services · 2023' },
-  { icon: '💼', label: 'Experience', value: '5+ Years Professional', sub: 'Full-Stack Development' },
-  { icon: '🌍', label: 'Languages', value: 'English & Hindi', sub: 'Professional proficiency' },
-];
+const emptyState = {
+  title: 'Add your details in Admin',
+  description: 'This section will appear once you add content from the admin dashboard.',
+};
 
 /* ─────────────────────────────────────────────────────────────────────────────
    SkillBar
@@ -179,25 +119,6 @@ const ProfilePhoto = ({
 
   return (
     <div className="relative flex items-center justify-center">
-      {/* Spinning dashed ring */}
-      <svg
-        className="absolute w-[340px] h-[340px] lg:w-[420px] lg:h-[420px] text-primary-300/40 dark:text-primary-700/40"
-        viewBox="0 0 200 200"
-      >
-        <motion.circle
-          cx="100"
-          cy="100"
-          r="96"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeDasharray="8 5"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          style={{ transformOrigin: '100px 100px' }}
-        />
-      </svg>
-
       {/* Glow blob behind photo */}
       <div className="absolute w-64 h-64 lg:w-80 lg:h-80 rounded-full gradient-bg opacity-20 blur-2xl" />
 
@@ -212,8 +133,8 @@ const ProfilePhoto = ({
           />
         ) : (
           <div className="w-full h-full gradient-bg flex flex-col items-center justify-center gap-2">
-            <span className="text-white font-display font-bold text-6xl lg:text-7xl">{initials}</span>
-            <span className="text-white/60 text-xs font-mono">Add photo via Admin</span>
+            <span className="text-white font-display font-bold text-6xl lg:text-7xl">{initials || '—'}</span>
+            <span className="text-white/60 text-xs font-mono">Add photo in Admin</span>
           </div>
         )}
       </div>
@@ -227,7 +148,7 @@ const ProfilePhoto = ({
       >
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-          {availabilityStatus || 'Open to work'}
+          {availabilityStatus || 'Update availability in Admin'}
         </span>
       </motion.div>
 
@@ -238,7 +159,7 @@ const ProfilePhoto = ({
         transition={{ delay: 0.9, type: 'spring' }}
         className="absolute top-0 -left-2 z-20 bg-primary-600 rounded-2xl px-3 py-2 shadow-xl"
       >
-        <span className="text-white text-sm font-bold block">{yearsExperience || '5+'}</span>
+        <span className="text-white text-sm font-bold block">{yearsExperience || '—'}</span>
         <span className="text-primary-200 text-xs">Experience</span>
       </motion.div>
     </div>
@@ -256,7 +177,6 @@ const AboutPage = () => {
     location,
     email,
     profilePicUrl,
-    resumeUrl,
     hasResume,
     careerJourney,
     availabilityStatus,
@@ -266,29 +186,27 @@ const AboutPage = () => {
     resumeHighlights,
   } = useProfile();
 
-  const displayName     = fullName || 'Your Name';
-  const displayHeadline = headline || 'Lifelong Learner';
+  const displayName     = fullName || '';
+  const displayHeadline = headline || '';
+  const apiBase = import.meta.env.VITE_API_URL || '/api';
   const displayBio      = bio
     ? bio.split('\n').map((item) => item.trim()).filter(Boolean)
-    : [
-        "I'm a full-stack software developer with 5+ years of experience building production-grade web applications. I specialize in the JavaScript ecosystem — from pixel-perfect React frontends to robust Node.js backends.",
-        'My approach combines pragmatic engineering with a keen eye for UX. I believe great software is not just functional — it is fast, maintainable, and delightful to use.',
-        "When I'm not coding, I contribute to open-source, write technical articles, and explore new technologies to stay on the cutting edge.",
-      ];
+    : [];
 
   // FIX: derive yearsExperience here inside AboutPage so it can be passed as a prop
-  const yearsExperience       = stats.find((item) => /year/i.test(item.label))?.value || '5+';
+  const yearsExperience       = stats.find((item) => /year/i.test(item.label))?.value || '';
 
-  const journeyItems          = careerJourney.length > 0    ? careerJourney    : defaultCareerJourney;
-  const displaySkillCategories = skillCategories.length > 0 ? skillCategories  : defaultSkillCategories;
-  const displayExperiences    = experiences.length > 0      ? experiences      : defaultExperiences;
-  const displayResumeHighlights = resumeHighlights.length > 0 ? resumeHighlights : defaultResumeHighlights;
+  const journeyItems          = careerJourney;
+  const displaySkillCategories = skillCategories;
+  const displayExperiences    = experiences;
+  const displayResumeHighlights = resumeHighlights;
+  const resumeHref = hasResume ? `${apiBase}/profile/resume` : null;
 
   return (
     <div>
 
       {/* ── HERO / BIO ─────────────────────────────────────────────────── */}
-      <Section className="pt-24 pb-16">
+      <Section className="pt-16 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
 
           {/* Photo */}
@@ -316,20 +234,22 @@ const AboutPage = () => {
             <span className="tag mb-4 inline-flex">About Me</span>
             <h1 className="section-title mb-6">
               Developer, Problem Solver,<br />
-              <span className="gradient-text">{displayHeadline}</span>
+              <span className="gradient-text">{displayHeadline || emptyState.title}</span>
             </h1>
             <div className="space-y-4 text-slate-600 dark:text-slate-400 leading-relaxed text-[15px]">
-              {displayBio.map((paragraph, index) => (
+              {displayBio.length > 0 ? displayBio.map((paragraph, index) => (
                 <p key={`${index}-${paragraph.slice(0, 24)}`}>{paragraph}</p>
-              ))}
+              )) : (
+                <p>{emptyState.description}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3 mt-6 mb-8">
               {[
-                { label: 'Name',     value: displayName },
-                { label: 'Email',    value: email    || 'your@email.com' },
-                { label: 'Location', value: location || 'Your City, Country' },
-                { label: 'Role',     value: headline || 'MERN / TypeScript' },
+                { label: 'Name',     value: displayName || '-' },
+                { label: 'Email',    value: email    || '-' },
+                { label: 'Location', value: location || '-' },
+                { label: 'Role',     value: headline || '-' },
               ].map((item) => (
                 <div key={item.label} className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3">
                   <p className="text-xs text-slate-400 uppercase tracking-wider mb-0.5">{item.label}</p>
@@ -346,8 +266,8 @@ const AboutPage = () => {
                 Hire Me
               </Link>
 
-              {hasResume && resumeUrl ? (
-                <a href={resumeUrl} download target="_blank" rel="noopener noreferrer" className="btn-secondary">
+              {hasResume && resumeHref ? (
+                <a href={resumeHref} target="_blank" rel="noopener noreferrer" className="btn-secondary">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
@@ -368,23 +288,29 @@ const AboutPage = () => {
         subtitle="Technologies I use to bring ideas to life"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {displaySkillCategories.map((category, i) => (
-            <motion.div
-              key={category.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="card p-6"
-            >
-              <h3 className="font-display font-semibold text-lg text-slate-900 dark:text-white mb-5 flex items-center gap-2">
-                <span>{category.icon}</span> {category.name}
-              </h3>
-              {category.skills.map((skill) => (
-                <SkillBar key={skill.name} {...skill} />
-              ))}
-            </motion.div>
-          ))}
+          {displaySkillCategories.length > 0 ? (
+            displaySkillCategories.map((category, i) => (
+              <motion.div
+                key={category.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="card p-6"
+              >
+                <h3 className="font-display font-semibold text-lg text-slate-900 dark:text-white mb-5 flex items-center gap-2">
+                  <span className="text-primary-600 dark:text-primary-400">{renderIcon(category.icon)}</span> {category.name}
+                </h3>
+                {category.skills.map((skill) => (
+                  <SkillBar key={skill.name} {...skill} />
+                ))}
+              </motion.div>
+            ))
+          ) : (
+            <div className="card p-6 text-sm text-slate-500 dark:text-slate-400">
+              {emptyState.description}
+            </div>
+          )}
         </div>
       </Section>
 
@@ -393,38 +319,44 @@ const AboutPage = () => {
         <div className="relative">
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-slate-800 -translate-x-1/2" />
           <div className="space-y-12">
-            {displayExperiences.map((exp, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className={`relative flex flex-col md:flex-row gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
-              >
-                <div className="absolute left-4 md:left-1/2 top-6 w-4 h-4 rounded-full bg-primary-500 border-4 border-white dark:border-slate-950 -translate-x-1/2 z-10" />
-                <div className="hidden md:block md:w-1/2" />
-                <div className="pl-10 md:pl-0 md:w-1/2">
-                  <div className="card p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-display font-semibold text-lg text-slate-900 dark:text-white">{exp.title}</h3>
-                        <p className="text-primary-600 dark:text-primary-400 font-medium">{exp.company}</p>
+            {displayExperiences.length > 0 ? (
+              displayExperiences.map((exp, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 }}
+                  className={`relative flex flex-col md:flex-row gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                >
+                  <div className="absolute left-4 md:left-1/2 top-6 w-4 h-4 rounded-full bg-primary-500 border-4 border-white dark:border-slate-950 -translate-x-1/2 z-10" />
+                  <div className="hidden md:block md:w-1/2" />
+                  <div className="pl-10 md:pl-0 md:w-1/2">
+                    <div className="card p-6">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-display font-semibold text-lg text-slate-900 dark:text-white">{exp.title}</h3>
+                          <p className="text-primary-600 dark:text-primary-400 font-medium">{exp.company}</p>
+                        </div>
+                        <span className="text-xs font-mono text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded whitespace-nowrap">
+                          {exp.period}
+                        </span>
                       </div>
-                      <span className="text-xs font-mono text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded whitespace-nowrap">
-                        {exp.period}
-                      </span>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">{exp.description}</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {exp.tech.map((t) => (
-                        <span key={t} className="tag">{t}</span>
-                      ))}
+                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">{exp.description}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {exp.tech.map((t) => (
+                          <span key={t} className="tag">{t}</span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            ) : (
+              <div className="card p-6 text-sm text-slate-500 dark:text-slate-400">
+                {emptyState.description}
+              </div>
+            )}
           </div>
         </div>
       </Section>
@@ -439,46 +371,52 @@ const AboutPage = () => {
           <div className="absolute left-5 top-4 bottom-4 w-px bg-gradient-to-b from-primary-400 via-accent-400 to-primary-500 md:left-1/2 md:-translate-x-1/2" />
 
           <div className="space-y-8 md:space-y-10">
-            {journeyItems.map((item, index) => (
-              <motion.div
-                key={item.year}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="relative pl-16 md:grid md:grid-cols-2 md:gap-10 md:pl-0"
-              >
-                <div className={index % 2 === 0 ? '' : 'md:order-2'} />
+            {journeyItems.length > 0 ? (
+              journeyItems.map((item, index) => (
+                <motion.div
+                  key={`${item.year}-${index}`}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  className="relative pl-16 md:grid md:grid-cols-2 md:gap-10 md:pl-0"
+                >
+                  <div className={index % 2 === 0 ? '' : 'md:order-2'} />
 
-                <div className={index % 2 === 0 ? '' : 'md:order-1'}>
-                  <div className="relative card overflow-hidden p-6 md:p-7">
-                    <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accent}`} />
+                  <div className={index % 2 === 0 ? '' : 'md:order-1'}>
+                    <div className="relative card overflow-hidden p-6 md:p-7">
+                      <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accent}`} />
 
-                    <div className="mb-4 flex items-center justify-between gap-3">
-                      <span
-                        className={`inline-flex rounded-full bg-gradient-to-r px-3 py-1 text-xs font-mono font-semibold text-white shadow-lg ${item.accent}`}
-                      >
-                        {item.year}
-                      </span>
-                      <span className="text-xs uppercase tracking-[0.22em] text-slate-400">
-                        {item.subtitle}
-                      </span>
+                      <div className="mb-4 flex items-center justify-between gap-3">
+                        <span
+                          className={`inline-flex rounded-full bg-gradient-to-r px-3 py-1 text-xs font-mono font-semibold text-white shadow-lg ${item.accent}`}
+                        >
+                          {item.year}
+                        </span>
+                        <span className="text-xs uppercase tracking-[0.22em] text-slate-400">
+                          {item.subtitle}
+                        </span>
+                      </div>
+
+                      <h3 className="mb-3 font-display text-xl font-semibold text-slate-900 dark:text-white">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm leading-7 text-slate-600 dark:text-slate-400">
+                        {item.description}
+                      </p>
                     </div>
-
-                    <h3 className="mb-3 font-display text-xl font-semibold text-slate-900 dark:text-white">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm leading-7 text-slate-600 dark:text-slate-400">
-                      {item.description}
-                    </p>
                   </div>
-                </div>
 
-                <div className="absolute left-5 top-7 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-slate-950 shadow-lg dark:border-slate-950 md:left-1/2">
-                  <div className={`h-4 w-4 rounded-full bg-gradient-to-r ${item.accent}`} />
-                </div>
-              </motion.div>
-            ))}
+                  <div className="absolute left-5 top-7 flex h-10 w-10 -translate-x-1/2 items-center justify-center rounded-full border-4 border-white bg-slate-950 shadow-lg dark:border-slate-950 md:left-1/2">
+                    <div className={`h-4 w-4 rounded-full bg-gradient-to-r ${item.accent}`} />
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="card p-6 text-sm text-slate-500 dark:text-slate-400">
+                {emptyState.description}
+              </div>
+            )}
           </div>
         </div>
       </Section>
@@ -492,21 +430,29 @@ const AboutPage = () => {
       >
         {/* Highlights */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
-          {displayResumeHighlights.map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="card p-5 text-center hover:border-primary-300 dark:hover:border-primary-700 transition-colors group"
-            >
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform inline-block">{item.icon}</div>
-              <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
-              <p className="font-display font-semibold text-slate-900 dark:text-white text-sm mb-0.5">{item.value}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{item.sub}</p>
-            </motion.div>
-          ))}
+          {displayResumeHighlights.length > 0 ? (
+            displayResumeHighlights.map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="card p-5 text-center hover:border-primary-300 dark:hover:border-primary-700 transition-colors group"
+              >
+                <div className="text-3xl mb-3 group-hover:scale-110 transition-transform inline-block text-primary-600 dark:text-primary-400">
+                  {renderIcon(item.icon)}
+                </div>
+                <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">{item.label}</p>
+                <p className="font-display font-semibold text-slate-900 dark:text-white text-sm mb-0.5">{item.value}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{item.sub}</p>
+              </motion.div>
+            ))
+          ) : (
+            <div className="card p-5 text-sm text-slate-500 dark:text-slate-400">
+              {emptyState.description}
+            </div>
+          )}
         </div>
 
         {/* Resume download card */}
@@ -574,11 +520,10 @@ const AboutPage = () => {
                 ))}
               </ul>
 
-              {hasResume && resumeUrl ? (
+              {hasResume && resumeHref ? (
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href={resumeUrl}
-                    download
+                    href={resumeHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-primary"
@@ -589,7 +534,7 @@ const AboutPage = () => {
                     Download PDF
                   </a>
                   <a
-                    href={resumeUrl}
+                    href={resumeHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-secondary"

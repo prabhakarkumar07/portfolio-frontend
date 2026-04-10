@@ -8,10 +8,13 @@ import Footer from './components/layout/Footer';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ProjectsPage from './pages/ProjectsPage';
+import BlogPage from './pages/BlogPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 import ContactPage from './pages/ContactPage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProjects from './pages/admin/AdminProjects';
+import AdminBlogs from './pages/admin/AdminBlogs';
 import AdminMessages from './pages/admin/AdminMessages';
 import AdminProfile from './pages/admin/AdminProfile';
 import AdminLayout from './components/admin/AdminLayout';
@@ -44,6 +47,8 @@ function App() {
                       <Route path="/" element={<HomePage />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/projects" element={<ProjectsPage />} />
+                      <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/blog/:slug" element={<BlogDetailPage />} />
                       <Route path="/contact" element={<ContactPage />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
@@ -62,6 +67,7 @@ function App() {
                     <Routes>
                       <Route path="dashboard" element={<AdminDashboard />} />
                       <Route path="projects" element={<AdminProjects />} />
+                      <Route path="blogs" element={<AdminBlogs />} />
                       <Route path="messages" element={<AdminMessages />} />
                       <Route path="profile" element={<AdminProfile />} />
                       <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
