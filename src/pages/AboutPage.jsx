@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import useProfile from '../hooks/useProfile';
+import { getApiBase } from '../utils/api';
 
 const iconMap = {
   backend: (
@@ -188,7 +189,7 @@ const AboutPage = () => {
 
   const displayName     = fullName || '';
   const displayHeadline = headline || '';
-  const apiBase = import.meta.env.VITE_API_URL || '/api';
+  const apiBase = getApiBase();
   const displayBio      = bio
     ? bio.split('\n').map((item) => item.trim()).filter(Boolean)
     : [];

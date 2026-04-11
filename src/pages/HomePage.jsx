@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ProjectCard from '../components/ProjectCard';
 import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';
-import { projectsAPI } from '../utils/api';
+import { getApiBase, projectsAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import useProfile from '../hooks/useProfile';
 
@@ -50,14 +50,7 @@ const HomePage = () => {
   const displayHeadline = headline || '';
   const displayStats = stats.length > 0 ? stats : defaultStats;
   
-  const getApiBase = () => {
-  const base = import.meta.env.VITE_API_URL || '/api';
-  const cleanBase = base.replace(/\/$/, '');
-
-  return cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
-};
-
-const apiBase = getApiBase();
+  const apiBase = getApiBase();
 
   const featuredProjects = data?.data || [];
   const derivedSkills = skillCategories.flatMap((category) =>

@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 // eslint-disable-next-line
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { profileAPI } from "../../utils/api";
+import { getApiBase, profileAPI } from "../../utils/api";
 import useProfile from "../../hooks/useProfile";
 
 const accentOptions = [
@@ -1528,7 +1528,7 @@ const ResumeCard = ({ url, hasResume, onUpload }) => {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 const AdminProfile = () => {
   const profile = useProfile();
-  const apiBase = import.meta.env.VITE_API_URL || "/api";
+  const apiBase = getApiBase();
   const resumeHref = profile.hasResume ? `${apiBase}/profile/resume` : "";
 
   return (

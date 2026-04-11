@@ -69,6 +69,12 @@ export const contactAPI = {
   submit: (data) => api.post('/contact', data),
 };
 
+export const getApiBase = () => {
+  const base = import.meta.env.VITE_API_URL || '/api';
+  const cleanBase = base.replace(/\/$/, '');
+  return cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
+};
+
 export const profileAPI = {
   get: () => api.get('/profile'),
   update: (data) => api.put('/admin/profile', data),
