@@ -49,7 +49,15 @@ const HomePage = () => {
   const displayName = fullName || 'Your Name';
   const displayHeadline = headline || '';
   const displayStats = stats.length > 0 ? stats : defaultStats;
-  const apiBase = import.meta.env.VITE_API_URL || '/api';
+  
+  const getApiBase = () => {
+  const base = import.meta.env.VITE_API_URL || '/api';
+  const cleanBase = base.replace(/\/$/, '');
+
+  return cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
+};
+
+const apiBase = getApiBase();
 
   const featuredProjects = data?.data || [];
   const derivedSkills = skillCategories.flatMap((category) =>
