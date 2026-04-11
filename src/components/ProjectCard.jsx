@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * components/ProjectCard.js - Reusable card for displaying a project
  */

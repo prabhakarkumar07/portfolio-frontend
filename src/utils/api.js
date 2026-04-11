@@ -1,21 +1,36 @@
 /**
  * utils/api.js - Centralized Axios instance with interceptors
- * All API calls go through this configured instance
+ * Fully dynamic using .env (supports local + production)
  */
 
 import axios from 'axios';
 
-// Create Axios instance with base config
+// 🔥 Resolve base URL dynamically
+const resolveApiBase = () => {
+  const base = import.meta.env.VITE_API_URL;
+
+  if (!base) return '/api';
+
+  const cleanBase = base.replace(/\/$/, '');
+
+  // ✅ If already /api (local), don't append again
+  if (cleanBase.endsWith('/api')) {
+    return cleanBase;
+  }
+
+  return `${cleanBase}/api`;
+};
+
+// 🔥 Create Axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: resolveApiBase(),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// ─── Request Interceptor ─────────────────────────────────────────────────────
-// Automatically attach JWT token to every request if it exists
+// ─── Request Interceptor ─────────────────────────────────────
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('adminToken');
@@ -27,12 +42,14 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// ─── Response Interceptor ────────────────────────────────────────────────────
-// Handle auth errors globally
+// ─── Response Interceptor ────────────────────────────────────
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 && window.location.pathname.startsWith('/admin')) {
+    if (
+      error.response?.status === 401 &&
+      window.location.pathname.startsWith('/admin')
+    ) {
       localStorage.removeItem('adminToken');
       localStorage.removeItem('adminUser');
       window.location.href = '/admin/login';
@@ -41,7 +58,7 @@ api.interceptors.response.use(
   }
 );
 
-// ─── API Methods ─────────────────────────────────────────────────────────────
+// ─── API METHODS ─────────────────────────────────────────────
 
 export const projectsAPI = {
   getAll: (params = {}) => api.get('/projects', { params }),
@@ -56,18 +73,20 @@ export const profileAPI = {
   get: () => api.get('/profile'),
   update: (data) => api.put('/admin/profile', data),
   deleteAsset: (type) => api.delete(`/admin/profile/assets/${type}`),
+
   uploadPicture: (file) => {
     const form = new FormData();
     form.append('profileImage', file);
     return api.post('/admin/profile/assets', form, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+
   uploadResume: (file) => {
     const form = new FormData();
     form.append('resume', file);
     return api.post('/admin/profile/assets', form, {
-      headers: { 'Content-Type': 'multipart/form-data' }
+      headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
 };
@@ -85,6 +104,7 @@ export const adminAPI = {
   createProject: (data) => api.post('/admin/projects', data),
   updateProject: (id, data) => api.put(`/admin/projects/${id}`, data),
   deleteProject: (id) => api.delete(`/admin/projects/${id}`),
+
   getMessages: (params = {}) => api.get('/admin/messages', { params }),
   markAsRead: (id) => api.patch(`/admin/messages/${id}/read`),
   deleteMessage: (id) => api.delete(`/admin/messages/${id}`),
@@ -94,6 +114,7 @@ export const adminAPI = {
   createBlog: (data) => api.post('/admin/blogs', data),
   updateBlog: (id, data) => api.put(`/admin/blogs/${id}`, data),
   deleteBlog: (id) => api.delete(`/admin/blogs/${id}`),
+
   uploadBlogImage: (file) => {
     const form = new FormData();
     form.append('image', file);
