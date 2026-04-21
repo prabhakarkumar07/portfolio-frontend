@@ -5,7 +5,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../utils/api';
 
-const AuthContext = createContext();
+export const AuthContext = createContext(null);
+
 
 export const AuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null);
