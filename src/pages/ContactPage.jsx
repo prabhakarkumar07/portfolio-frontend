@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { contactAPI } from '../utils/api';
 import Section from '../components/Section';
 import useProfile from '../hooks/useProfile';
+import useSeo from '../hooks/useSeo';
 
 const initialForm = { name: '', email: '', subject: '', message: '' };
 
@@ -17,6 +18,12 @@ const ContactPage = () => {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  useSeo({
+    title: 'Contact',
+    description: contactIntro || `Contact Prabhakar Kumar for full stack development, backend engineering, or collaboration opportunities in ${location || 'India'}.`,
+    path: '/contact',
+  });
 
   const contactInfo = [
     {

@@ -10,6 +10,7 @@ import { projectsAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import Section from '../components/Section';
 import useProfile from '../hooks/useProfile';
+import useSeo from '../hooks/useSeo';
 
 const categories = ['All', 'Web', 'Mobile', 'API', 'ML/AI', 'DevOps', 'Other'];
 
@@ -21,6 +22,12 @@ const ProjectsPage = () => {
   const { data, loading, error, refetch } = useFetch(
     () => projectsAPI.getAll({ limit: 50 })
   );
+
+  useSeo({
+    title: projectsPageTitle || 'Projects',
+    description: projectsPageSubtitle || 'Explore featured full stack, backend, and frontend projects by Prabhakar Kumar.',
+    path: '/projects',
+  });
 
   const allProjects = useMemo(() => data?.data || [], [data]);
 

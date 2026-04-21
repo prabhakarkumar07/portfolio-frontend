@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import useProfile from '../hooks/useProfile';
 import { getApiBase } from '../utils/api';
+import useSeo from '../hooks/useSeo';
 
 const iconMap = {
   backend: (
@@ -200,7 +201,23 @@ const AboutPage = () => {
   const displaySkillCategories = skillCategories;
   const displayExperiences    = experiences;
   const displayResumeHighlights = resumeHighlights;
-  const resumeHref = hasResume ? `${apiBase}/profile/resume` : null;
+  const resumeHref = hasResume ? `${apiBase}/profile/resume?source=about` : null;
+
+  useSeo({
+    title: 'About',
+    description: bio || `${displayName} is a full stack developer focused on scalable backend systems, performant frontend apps, and reliable delivery.`,
+    path: '/about',
+    image: profilePicUrl || undefined,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: displayName || 'Prabhakar Kumar',
+      jobTitle: displayHeadline || 'Software Programmer',
+      address: location || undefined,
+      email: email || undefined,
+      image: profilePicUrl || undefined,
+    },
+  });
 
   return (
     <div>

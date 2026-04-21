@@ -10,6 +10,7 @@ import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';
 import { getApiBase, projectsAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import useProfile from '../hooks/useProfile';
+import useSeo from '../hooks/useSeo';
 
 // ── Animation Variants ────────────────────────────────────────────────────────
 const fadeUp = {
@@ -58,7 +59,22 @@ const HomePage = () => {
       .filter(Boolean)
   );
   const heroSkills = Array.from(new Set(derivedSkills)).slice(0, 10);
-  const resumeHref = hasResume ? `${apiBase}/profile/resume` : null;
+  const resumeHref = hasResume ? `${apiBase}/profile/resume?source=home` : null;
+
+  useSeo({
+    title: 'Home',
+    description: heroDescription || `${displayName} builds full stack applications with Java, Spring Boot, React, and modern cloud-ready architecture.`,
+    path: '/',
+    image: profilePicUrl || undefined,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: displayName,
+      jobTitle: displayHeadline,
+      description: heroDescription || displayHeadline,
+      url: window.location.origin,
+    },
+  });
 
   return (
     <div>

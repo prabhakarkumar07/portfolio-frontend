@@ -14,7 +14,9 @@ const STATUSES = ['completed', 'in-progress', 'planned'];
 
 const emptyProject = {
   title: '', shortDescription: '', description: '', technologies: '',
-  category: 'Web', githubUrl: '', liveUrl: '', imageUrl: '',
+  slug: '', category: 'Web', githubUrl: '', liveUrl: '', imageUrl: '',
+  gallery: '', role: '', duration: '', problem: '', solution: '', impact: '',
+  keyFeatures: '', metrics: '',
   featured: false, status: 'completed', order: 0,
 };
 
@@ -23,7 +25,15 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
   const isEdit = !!project?._id;
   const [form, setForm] = useState(
     project
-      ? { ...project, technologies: Array.isArray(project.technologies) ? project.technologies.join(', ') : '' }
+      ? {
+          ...project,
+          technologies: Array.isArray(project.technologies) ? project.technologies.join(', ') : '',
+          gallery: Array.isArray(project.gallery) ? project.gallery.join(', ') : '',
+          keyFeatures: Array.isArray(project.keyFeatures) ? project.keyFeatures.join('\n') : '',
+          metrics: Array.isArray(project.metrics)
+            ? project.metrics.map((item) => `${item.label}: ${item.value}`).join('\n')
+            : '',
+        }
       : emptyProject
   );
   const [submitting, setSubmitting] = useState(false);
@@ -51,7 +61,22 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
 
     const payload = {
       ...form,
+      slug: form.slug.trim(),
       technologies: form.technologies.split(',').map((t) => t.trim()).filter(Boolean),
+      gallery: form.gallery.split(',').map((item) => item.trim()).filter(Boolean),
+      keyFeatures: form.keyFeatures.split('\n').map((item) => item.trim()).filter(Boolean),
+      metrics: form.metrics
+        .split('\n')
+        .map((row) => row.trim())
+        .filter(Boolean)
+        .map((row) => {
+          const [label, ...valueParts] = row.split(':');
+          return {
+            label: (label || '').trim(),
+            value: valueParts.join(':').trim(),
+          };
+        })
+        .filter((item) => item.label || item.value),
       order: Number(form.order) || 0,
     };
 
@@ -116,6 +141,7 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <Field label="Title" name="title" placeholder="E-Commerce Platform" required />
+          <Field label="Slug" name="slug" placeholder="e-commerce-platform" />
           <Field label="Short Description" name="shortDescription" placeholder="One-liner about the project" required />
           <Field label="Full Description" name="description" placeholder="Detailed description..." required textarea />
           <Field label="Technologies" name="technologies" placeholder="React, Node.js, MongoDB (comma-separated)" required />
@@ -128,6 +154,16 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
           <Field label="GitHub URL" name="githubUrl" placeholder="https://github.com/..." />
           <Field label="Live URL" name="liveUrl" placeholder="https://..." />
           <Field label="Image URL" name="imageUrl" placeholder="https://images.unsplash.com/..." />
+          <Field label="Gallery URLs" name="gallery" placeholder="https://image-1..., https://image-2..." />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Field label="Your Role" name="role" placeholder="Full Stack Developer" />
+            <Field label="Duration" name="duration" placeholder="6 weeks" />
+          </div>
+          <Field label="The Challenge" name="problem" placeholder="What problem did this solve?" textarea />
+          <Field label="The Solution" name="solution" placeholder="How did you approach it?" textarea />
+          <Field label="Impact / Results" name="impact" placeholder="What changed after launch?" textarea />
+          <Field label="Key Features" name="keyFeatures" placeholder={'Authentication\nDashboards\nSearch'} textarea />
+          <Field label="Metrics" name="metrics" placeholder={'Users: 10k+\nPerformance gain: 40%'} textarea />
 
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-2 cursor-pointer">

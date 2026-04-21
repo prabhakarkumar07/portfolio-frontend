@@ -32,15 +32,18 @@ const AdminDashboard = () => {
   const { data: messagesData, loading: mLoading } = useFetch(() => adminAPI.getMessages({ limit: 1 }));
   const { data: unreadData } = useFetch(() => adminAPI.getMessages({ isRead: false, limit: 5 }));
   const { data: blogsData } = useFetch(() => adminAPI.getBlogs({ limit: 1 }));
+  const { data: analyticsData } = useFetch(() => adminAPI.getProfileAnalytics());
   const profile = useProfile();
 
-  const totalProjects = projectsData?.total ?? '—';
-  const totalMessages = messagesData?.total ?? '—';
-  const totalBlogs = blogsData?.total ?? '—';
-  const unreadCount = messagesData?.unreadCount ?? '—';
+  const totalProjects = projectsData?.total ?? '-';
+  const totalMessages = messagesData?.total ?? '-';
+  const totalBlogs = blogsData?.total ?? '-';
+  const unreadCount = messagesData?.unreadCount ?? '-';
   const recentMessages = unreadData?.data || [];
+  const resumeDownloads = analyticsData?.data?.resumeAnalytics?.totalDownloads ?? 0;
+  const lastResumeDownload = analyticsData?.data?.resumeAnalytics?.lastDownloadedAt;
+  const recentResumeViews = analyticsData?.data?.resumeAnalytics?.recentViews || [];
 
-  // Profile completeness
   const completenessItems = [
     { label: 'Profile picture', done: profile.hasProfile, link: '/admin/profile' },
     { label: 'Resume uploaded', done: profile.hasResume, link: '/admin/profile' },
@@ -49,7 +52,7 @@ const AdminDashboard = () => {
     { label: 'Projects added', done: (projectsData?.total ?? 0) > 0, link: '/admin/projects' },
     { label: 'Blog posts added', done: (blogsData?.total ?? 0) > 0, link: '/admin/blogs' },
   ];
-  const completePct = Math.round((completenessItems.filter((i) => i.done).length / completenessItems.length) * 100);
+  const completePct = Math.round((completenessItems.filter((item) => item.done).length / completenessItems.length) * 100);
 
   if (pLoading || mLoading) return <PageLoader />;
 
@@ -57,38 +60,85 @@ const AdminDashboard = () => {
     <div className="space-y-8 max-w-5xl">
       <div>
         <h1 className="font-display font-bold text-2xl text-slate-900 dark:text-white">Dashboard</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Welcome back! Here's what's happening.</p>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Welcome back! Here&apos;s what&apos;s happening.</p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <StatCard label="Total Projects" value={totalProjects} icon="🗂️" color="bg-primary-50 dark:bg-primary-950" delay={0} />
-        <StatCard label="Messages" value={totalMessages} icon="✉️" color="bg-blue-50 dark:bg-blue-950" delay={0.1} />
-        <StatCard label="Blogs" value={totalBlogs} icon="📝" color="bg-emerald-50 dark:bg-emerald-950" delay={0.2} />
-        <StatCard label="Unread" value={unreadCount} icon="🔔" color="bg-amber-50 dark:bg-amber-950" delay={0.3} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+        <StatCard label="Total Projects" value={totalProjects} icon="Projects" color="bg-primary-50 dark:bg-primary-950" delay={0} />
+        <StatCard label="Messages" value={totalMessages} icon="Inbox" color="bg-blue-50 dark:bg-blue-950" delay={0.1} />
+        <StatCard label="Blogs" value={totalBlogs} icon="Posts" color="bg-emerald-50 dark:bg-emerald-950" delay={0.2} />
+        <StatCard label="Unread" value={unreadCount} icon="Unread" color="bg-amber-50 dark:bg-amber-950" delay={0.3} />
+        <StatCard label="Resume Views" value={resumeDownloads} icon="Resume" color="bg-fuchsia-50 dark:bg-fuchsia-950" delay={0.4} />
       </div>
 
-      {/* Profile Completeness */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.22 }}
+        className="card p-5"
+      >
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-display font-semibold text-slate-900 dark:text-white">Resume Analytics</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Track how often visitors open your resume and where they came from.
+            </p>
+          </div>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Last view: {lastResumeDownload ? new Date(lastResumeDownload).toLocaleString() : 'No views yet'}
+          </p>
+        </div>
+        {recentResumeViews.length > 0 && (
+          <div className="mt-4 space-y-2">
+            {recentResumeViews.slice(0, 5).map((view, index) => (
+              <div
+                key={`${view.downloadedAt}-${index}`}
+                className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm dark:bg-slate-800/50"
+              >
+                <div>
+                  <p className="font-medium text-slate-700 dark:text-slate-200">{view.source || 'direct'}</p>
+                  <p className="text-xs text-slate-400">{view.referrer || 'No referrer captured'}</p>
+                </div>
+                <span className="text-xs text-slate-400">{new Date(view.downloadedAt).toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+
       {completePct < 100 && (
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-          className="card p-5">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="card p-5"
+        >
           <div className="flex items-center justify-between mb-3">
             <div>
               <h2 className="font-display font-semibold text-slate-900 dark:text-white">Portfolio Completeness</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Complete your profile so visitors see the best version of your portfolio.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Complete your profile so visitors see the best version of your portfolio.
+              </p>
             </div>
             <span className="font-display font-bold text-2xl text-primary-600 dark:text-primary-400">{completePct}%</span>
           </div>
-          {/* Progress bar */}
           <div className="h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-4">
-            <motion.div className="h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full"
-              initial={{ width: 0 }} animate={{ width: `${completePct}%` }} transition={{ duration: 0.8, ease: 'easeOut' }} />
+            <motion.div
+              className="h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${completePct}%` }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            />
           </div>
           <div className="space-y-2">
             {completenessItems.map((item) => (
-              <Link key={item.label} to={item.link}
-                className={`flex items-center gap-3 p-2.5 rounded-lg transition-colors text-sm
-                  ${item.done ? 'opacity-60 cursor-default pointer-events-none' : 'hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+              <Link
+                key={item.label}
+                to={item.link}
+                className={`flex items-center gap-3 p-2.5 rounded-lg transition-colors text-sm ${
+                  item.done ? 'opacity-60 cursor-default pointer-events-none' : 'hover:bg-slate-50 dark:hover:bg-slate-800'
+                }`}
+              >
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${item.done ? 'bg-emerald-500' : 'border-2 border-slate-300 dark:border-slate-600'}`}>
                   {item.done && (
                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,16 +149,13 @@ const AdminDashboard = () => {
                 <span className={item.done ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-700 dark:text-slate-300 font-medium'}>
                   {item.label}
                 </span>
-                {!item.done && (
-                  <span className="ml-auto text-xs text-primary-600 dark:text-primary-400">Fix →</span>
-                )}
+                {!item.done && <span className="ml-auto text-xs text-primary-600 dark:text-primary-400">Fix -&gt;</span>}
               </Link>
             ))}
           </div>
         </motion.div>
       )}
 
-      {/* Quick Actions */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
         <h2 className="font-display font-semibold text-lg text-slate-900 dark:text-white mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-3">
@@ -125,22 +172,21 @@ const AdminDashboard = () => {
             View All Messages
           </Link>
           <Link to="/admin/profile" className="btn-ghost text-sm">
-            Manage Site Content →
+            Manage Site Content -&gt;
           </Link>
           <a href="/" target="_blank" rel="noopener noreferrer" className="btn-ghost text-sm">
-            View Portfolio ↗
+            View Portfolio -&gt;
           </a>
         </div>
       </motion.div>
 
-      {/* Recent Unread Messages */}
       {recentMessages.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-display font-semibold text-lg text-slate-900 dark:text-white">
               Unread Messages <span className="text-primary-500 text-base">({unreadCount})</span>
             </h2>
-            <Link to="/admin/messages" className="text-sm text-primary-600 dark:text-primary-400 hover:underline">View all →</Link>
+            <Link to="/admin/messages" className="text-sm text-primary-600 dark:text-primary-400 hover:underline">View all -&gt;</Link>
           </div>
           <div className="space-y-3">
             {recentMessages.map((msg) => (

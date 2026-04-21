@@ -7,11 +7,35 @@ import { Link, useParams } from 'react-router-dom';
 import { blogAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import { PageLoader, ErrorMessage } from '../components/LoadingSpinner';
+import useSeo from '../hooks/useSeo';
 
 const BlogDetailPage = () => {
   const { slug } = useParams();
   const { data, loading, error, refetch } = useFetch(() => blogAPI.getBySlug(slug));
   const blog = data?.data;
+
+  useSeo({
+    title: blog?.title || 'Blog',
+    description: blog?.excerpt || blog?.content?.slice(0, 160),
+    path: `/blog/${slug}`,
+    image: blog?.coverImage?.url,
+    type: 'article',
+    jsonLd: blog
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'BlogPosting',
+          headline: blog.title,
+          description: blog.excerpt || blog.content?.slice(0, 160),
+          image: blog.coverImage?.url || undefined,
+          author: {
+            '@type': 'Person',
+            name: blog.authorName || 'Prabhakar Kumar',
+          },
+          datePublished: blog.publishedAt || undefined,
+          url: `${window.location.origin}/blog/${slug}`,
+        }
+      : null,
+  });
 
   if (loading) return <PageLoader />;
   if (error) return <ErrorMessage message={error} onRetry={refetch} />;

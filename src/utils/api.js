@@ -62,6 +62,7 @@ api.interceptors.response.use(
 
 export const projectsAPI = {
   getAll: (params = {}) => api.get('/projects', { params }),
+  getBySlug: (slug) => api.get(`/projects/${slug}`),
   getById: (id) => api.get(`/projects/${id}`),
 };
 
@@ -109,6 +110,7 @@ export const blogAPI = {
 export const adminAPI = {
   login: (credentials) => api.post('/admin/login', credentials),
   getMe: () => api.get('/admin/me'),
+  getProfileAnalytics: () => api.get('/admin/profile/analytics'),
 
   getProjects: (params = {}) => api.get('/projects', { params }),
   createProject: (data) => api.post('/admin/projects', data),

@@ -1528,7 +1528,7 @@ const ResumeCard = ({ url, hasResume, onUpload }) => {
 const AdminProfile = () => {
   const profile = useProfile();
   const apiBase = getApiBase();
-  const resumeHref = profile.hasResume ? `${apiBase}/profile/resume` : "";
+  const resumeHref = profile.hasResume ? `${apiBase}/profile/resume?source=admin-profile` : "";
 
   return (
     <div className="max-w-3xl space-y-8">

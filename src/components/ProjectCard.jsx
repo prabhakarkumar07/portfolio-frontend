@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const statusColors = {
@@ -12,7 +13,8 @@ const statusColors = {
 };
 
 const ProjectCard = ({ project, index = 0 }) => {
-  const { title, shortDescription, technologies = [], category, githubUrl, liveUrl, imageUrl, status, featured } = project;
+  const { title, shortDescription, technologies = [], category, githubUrl, liveUrl, imageUrl, status, featured, slug, _id } = project;
+  const detailHref = `/projects/${slug || _id}`;
 
   return (
     <motion.div
@@ -74,6 +76,12 @@ const ProjectCard = ({ project, index = 0 }) => {
 
         {/* Action Links */}
         <div className="flex gap-3 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
+          <Link
+            to={detailHref}
+            className="btn-secondary text-sm py-1.5 px-4"
+          >
+            Details
+          </Link>
           {githubUrl && (
             <a
               href={githubUrl}

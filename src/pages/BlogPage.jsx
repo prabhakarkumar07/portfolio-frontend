@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { blogAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';
+import useSeo from '../hooks/useSeo';
 
 const BlogCard = ({ blog, index }) => (
   <motion.article
@@ -63,6 +64,12 @@ const BlogCard = ({ blog, index }) => (
 const BlogPage = () => {
   const { data, loading, error, refetch } = useFetch(() => blogAPI.getAll({ limit: 12 }));
   const blogs = data?.data || [];
+
+  useSeo({
+    title: 'Blog',
+    description: 'Thoughts, lessons, and engineering notes from Prabhakar Kumar on software development and product building.',
+    path: '/blog',
+  });
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8">
