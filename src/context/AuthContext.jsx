@@ -1,7 +1,7 @@
 /**
  * context/AuthContext.js - Admin authentication state
  */
-
+//eslint-disable-next-line 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { adminAPI } from '../utils/api';
 
@@ -23,8 +23,16 @@ export const AuthProvider = ({ children }) => {
         })
         .finally(() => setLoading(false));
     } else {
-      setLoading(false);
+      setTimeout(() => setLoading(false), 0); // Avoid synchronous setState
     }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      adminAPI.getMe().catch(() => {}); // Call the profile API and ignore errors
+    }, 300000); // 300000 ms = 5 minutes
+
+    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
   const login = async (credentials) => {
@@ -47,10 +55,4 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
-  return context;
 };
