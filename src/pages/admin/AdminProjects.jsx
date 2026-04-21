@@ -20,6 +20,47 @@ const emptyProject = {
   featured: false, status: 'completed', order: 0,
 };
 
+// ── Field component defined OUTSIDE ProjectModal to prevent focus loss ─────────
+// When Field is defined inside ProjectModal, React treats it as a new component
+// type on every render → unmounts old input → mounts fresh one → focus lost.
+// Keeping it here means React reuses the same component type and focus is preserved.
+const Field = ({ label, name, type = 'text', placeholder, required, textarea, options, form, errors, onChange }) => (
+  <div>
+    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+    {options ? (
+      <select
+        name={name}
+        value={form[name]}
+        onChange={onChange}
+        className="input-field"
+      >
+        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+      </select>
+    ) : textarea ? (
+      <textarea
+        name={name}
+        value={form[name]}
+        onChange={onChange}
+        rows={3}
+        placeholder={placeholder}
+        className={`input-field resize-none ${errors[name] ? 'border-red-400' : ''}`}
+      />
+    ) : (
+      <input
+        type={type}
+        name={name}
+        value={form[name]}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={`input-field ${errors[name] ? 'border-red-400' : ''}`}
+      />
+    )}
+    {errors[name] && <p className="mt-1 text-xs text-red-500">{errors[name]}</p>}
+  </div>
+);
+
 // ── Project Form Modal ─────────────────────────────────────────────────────────
 const ProjectModal = ({ project, onClose, onSaved }) => {
   const isEdit = !!project?._id;
@@ -98,28 +139,6 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
     }
   };
 
-  const Field = ({ label, name, type = 'text', placeholder, required, textarea, options }) => (
-    <div>
-      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      {options ? (
-        <select name={name} value={form[name]} onChange={handleChange}
-          className="input-field">
-          {options.map((o) => <option key={o} value={o}>{o}</option>)}
-        </select>
-      ) : textarea ? (
-        <textarea name={name} value={form[name]} onChange={handleChange} rows={3}
-          placeholder={placeholder} className={`input-field resize-none ${errors[name] ? 'border-red-400' : ''}`} />
-      ) : (
-        <input type={type} name={name} value={form[name]} onChange={handleChange}
-          placeholder={placeholder}
-          className={`input-field ${errors[name] ? 'border-red-400' : ''}`} />
-      )}
-      {errors[name] && <p className="mt-1 text-xs text-red-500">{errors[name]}</p>}
-    </div>
-  );
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <motion.div
@@ -132,7 +151,10 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
           <h2 className="font-display font-semibold text-lg text-slate-900 dark:text-white">
             {isEdit ? 'Edit Project' : 'New Project'}
           </h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors">
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"
+          >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -140,46 +162,90 @@ const ProjectModal = ({ project, onClose, onSaved }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <Field label="Title" name="title" placeholder="E-Commerce Platform" required />
-          <Field label="Slug" name="slug" placeholder="e-commerce-platform" />
-          <Field label="Short Description" name="shortDescription" placeholder="One-liner about the project" required />
-          <Field label="Full Description" name="description" placeholder="Detailed description..." required textarea />
-          <Field label="Technologies" name="technologies" placeholder="React, Node.js, MongoDB (comma-separated)" required />
+          <Field label="Title" name="title" placeholder="E-Commerce Platform" required
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Slug" name="slug" placeholder="e-commerce-platform"
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Short Description" name="shortDescription" placeholder="One-liner about the project" required
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Full Description" name="description" placeholder="Detailed description..." required textarea
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Technologies" name="technologies" placeholder="React, Node.js, MongoDB (comma-separated)" required
+            form={form} errors={errors} onChange={handleChange} />
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Category" name="category" options={CATEGORIES} />
-            <Field label="Status" name="status" options={STATUSES} />
+            <Field label="Category" name="category" options={CATEGORIES}
+              form={form} errors={errors} onChange={handleChange} />
+            <Field label="Status" name="status" options={STATUSES}
+              form={form} errors={errors} onChange={handleChange} />
           </div>
 
-          <Field label="GitHub URL" name="githubUrl" placeholder="https://github.com/..." />
-          <Field label="Live URL" name="liveUrl" placeholder="https://..." />
-          <Field label="Image URL" name="imageUrl" placeholder="https://images.unsplash.com/..." />
-          <Field label="Gallery URLs" name="gallery" placeholder="https://image-1..., https://image-2..." />
+          <Field label="GitHub URL" name="githubUrl" placeholder="https://github.com/..."
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Live URL" name="liveUrl" placeholder="https://..."
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Image URL" name="imageUrl" placeholder="https://images.unsplash.com/..."
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Gallery URLs" name="gallery" placeholder="https://image-1..., https://image-2..."
+            form={form} errors={errors} onChange={handleChange} />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Field label="Your Role" name="role" placeholder="Full Stack Developer" />
-            <Field label="Duration" name="duration" placeholder="6 weeks" />
+            <Field label="Your Role" name="role" placeholder="Full Stack Developer"
+              form={form} errors={errors} onChange={handleChange} />
+            <Field label="Duration" name="duration" placeholder="6 weeks"
+              form={form} errors={errors} onChange={handleChange} />
           </div>
-          <Field label="The Challenge" name="problem" placeholder="What problem did this solve?" textarea />
-          <Field label="The Solution" name="solution" placeholder="How did you approach it?" textarea />
-          <Field label="Impact / Results" name="impact" placeholder="What changed after launch?" textarea />
-          <Field label="Key Features" name="keyFeatures" placeholder={'Authentication\nDashboards\nSearch'} textarea />
-          <Field label="Metrics" name="metrics" placeholder={'Users: 10k+\nPerformance gain: 40%'} textarea />
+
+          <Field label="The Challenge" name="problem" placeholder="What problem did this solve?" textarea
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="The Solution" name="solution" placeholder="How did you approach it?" textarea
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Impact / Results" name="impact" placeholder="What changed after launch?" textarea
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Key Features" name="keyFeatures" placeholder={'Authentication\nDashboards\nSearch'} textarea
+            form={form} errors={errors} onChange={handleChange} />
+
+          <Field label="Metrics" name="metrics" placeholder={'Users: 10k+\nPerformance gain: 40%'} textarea
+            form={form} errors={errors} onChange={handleChange} />
 
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange}
-                className="w-4 h-4 rounded text-primary-600 focus:ring-primary-500" />
+              <input
+                type="checkbox"
+                name="featured"
+                checked={form.featured}
+                onChange={handleChange}
+                className="w-4 h-4 rounded text-primary-600 focus:ring-primary-500"
+              />
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Featured Project</span>
             </label>
             <div className="flex items-center gap-2">
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Sort Order</label>
-              <input type="number" name="order" value={form.order} onChange={handleChange} min="0"
-                className="input-field w-20 py-1.5 text-sm" />
+              <input
+                type="number"
+                name="order"
+                value={form.order}
+                onChange={handleChange}
+                min="0"
+                className="input-field w-20 py-1.5 text-sm"
+              />
             </div>
           </div>
 
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={onClose} className="btn-secondary flex-1 justify-center">Cancel</button>
+            <button type="button" onClick={onClose} className="btn-secondary flex-1 justify-center">
+              Cancel
+            </button>
             <button type="submit" disabled={submitting} className="btn-primary flex-1 justify-center">
               {submitting ? 'Saving...' : isEdit ? 'Save Changes' : 'Create Project'}
             </button>
@@ -310,7 +376,9 @@ const AdminProjects = () => {
             <div className="text-center py-16 text-slate-400">
               <p className="text-4xl mb-3">🗂️</p>
               <p className="font-medium">No projects yet</p>
-              <button onClick={() => setModal('new')} className="btn-primary text-sm mt-4">Add your first project</button>
+              <button onClick={() => setModal('new')} className="btn-primary text-sm mt-4">
+                Add your first project
+              </button>
             </div>
           )}
         </div>
