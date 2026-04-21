@@ -22,7 +22,7 @@ const ProjectsPage = () => {
     () => projectsAPI.getAll({ limit: 50 })
   );
 
-  const allProjects = data?.data || [];
+  const allProjects = useMemo(() => data?.data || [], [data]);
 
   // Client-side filtering
   const filteredProjects = useMemo(() => {

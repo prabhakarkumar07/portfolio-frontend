@@ -4,7 +4,6 @@
  */
 
 import React, { useEffect, useRef, useState } from "react";
-// eslint-disable-next-line
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { getApiBase, profileAPI } from "../../utils/api";
@@ -1215,9 +1214,9 @@ const ProfilePicCard = ({ url, onUpload }) => {
       const res = await profileAPI.uploadPicture(file);
 
       // 👉 replace with actual URL from backend
-      const imageUrl = res.data.imageUrl;
+      const imageUrl = res.data?.data?.profileImage?.url;
 
-      setPreview(imageUrl);
+      setPreview(imageUrl || tempUrl);
 
       toast.success("Profile picture updated! ✅");
       onUpload();

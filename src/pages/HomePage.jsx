@@ -4,7 +4,6 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line
 import { motion } from 'framer-motion';
 import ProjectCard from '../components/ProjectCard';
 import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';

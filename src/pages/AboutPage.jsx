@@ -11,7 +11,6 @@
  */
 
 import React, { useState } from 'react';
-// eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Section from '../components/Section';

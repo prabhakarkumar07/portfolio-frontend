@@ -4,9 +4,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 import useProfile from '../../hooks/useProfile';
 
 const navLinks = [
@@ -21,13 +21,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggleTheme } = useTheme();
-  const location = useLocation();
   const { siteTitle, logoLetter } = useProfile();
-
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location]);
 
   // Add shadow on scroll
   useEffect(() => {
@@ -50,6 +44,7 @@ const Navbar = () => {
           {/* Logo */}
           <Link
             to="/"
+            onClick={() => setIsMenuOpen(false)}
             className="flex items-center gap-2 font-display font-bold text-xl text-slate-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
           >
             <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-sm font-bold">
@@ -64,6 +59,7 @@ const Navbar = () => {
               <NavLink
                 key={link.path}
                 to={link.path}
+                onClick={() => setIsMenuOpen(false)}
                 className={({ isActive }) =>
                   `px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
@@ -129,6 +125,7 @@ const Navbar = () => {
                   <NavLink
                     key={link.path}
                     to={link.path}
+                    onClick={() => setIsMenuOpen(false)}
                     className={({ isActive }) =>
                       `block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                         isActive

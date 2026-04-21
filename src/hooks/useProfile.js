@@ -35,7 +35,7 @@ const mapProfile = (raw = {}) => ({
   profilePicUrl: raw.profileImage?.url || null,
   resumeUrl: raw.resume?.url || null,
   hasProfile: Boolean(raw.profileImage?.url),
-  hasResume: Boolean(raw.resume?.localPath || raw.resume?.url),
+  hasResume: Boolean(raw.resume?.publicId || raw.resume?.url),
   careerJourney: Array.isArray(raw.careerJourney) ? raw.careerJourney : [],
   stats: Array.isArray(raw.stats) ? raw.stats : [],
   skillCategories: Array.isArray(raw.skillCategories) ? raw.skillCategories : [],

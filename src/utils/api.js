@@ -69,6 +69,10 @@ export const contactAPI = {
   submit: (data) => api.post('/contact', data),
 };
 
+export const healthAPI = {
+  ping: () => api.get('/health'),
+};
+
 export const getApiBase = () => {
   const base = import.meta.env.VITE_API_URL || '/api';
   const cleanBase = base.replace(/\/$/, '');

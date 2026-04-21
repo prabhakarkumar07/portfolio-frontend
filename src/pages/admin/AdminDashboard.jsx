@@ -4,7 +4,6 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-// eslint-disable-next-line
 import { motion } from 'framer-motion';
 import { adminAPI } from '../../utils/api';
 import useFetch from '../../hooks/useFetch';
