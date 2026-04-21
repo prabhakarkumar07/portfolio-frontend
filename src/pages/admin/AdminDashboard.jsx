@@ -64,11 +64,11 @@ const AdminDashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
-        <StatCard label="Total Projects" value={totalProjects} icon="Projects" color="bg-primary-50 dark:bg-primary-950" delay={0} />
-        <StatCard label="Messages" value={totalMessages} icon="Inbox" color="bg-blue-50 dark:bg-blue-950" delay={0.1} />
-        <StatCard label="Blogs" value={totalBlogs} icon="Posts" color="bg-emerald-50 dark:bg-emerald-950" delay={0.2} />
-        <StatCard label="Unread" value={unreadCount} icon="Unread" color="bg-amber-50 dark:bg-amber-950" delay={0.3} />
-        <StatCard label="Resume Views" value={resumeDownloads} icon="Resume" color="bg-fuchsia-50 dark:bg-fuchsia-950" delay={0.4} />
+        <StatCard label="Total Projects" value={totalProjects} icon="P" color="bg-primary-50 dark:bg-primary-950" delay={0} />
+        <StatCard label="Messages" value={totalMessages} icon="I" color="bg-blue-50 dark:bg-blue-950" delay={0.1} />
+        <StatCard label="Blogs" value={totalBlogs} icon="P" color="bg-emerald-50 dark:bg-emerald-950" delay={0.2} />
+        <StatCard label="Unread" value={unreadCount} icon="U" color="bg-amber-50 dark:bg-amber-950" delay={0.3} />
+        <StatCard label="Resume Views" value={resumeDownloads} icon="R" color="bg-fuchsia-50 dark:bg-fuchsia-950" delay={0.4} />
       </div>
 
       <motion.div
