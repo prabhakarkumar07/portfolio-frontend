@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const interval = setInterval(() => {
       adminAPI.getMe().catch(() => {}); // Call the profile API and ignore errors
-    }, 300000); // 300000 ms = 5 minutes
+    }, 300001); // 300000 ms = 5 minutes
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);

@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 // eslint-disable-next-line
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 
 const AdminLoginPage = () => {
   const [form, setForm] = useState({ email: '', password: '' });
