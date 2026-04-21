@@ -15,7 +15,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import useProfile from '../hooks/useProfile';
-import { getApiBase } from '../utils/api';
 import useSeo from '../hooks/useSeo';
 
 const iconMap = {
@@ -179,6 +178,7 @@ const AboutPage = () => {
     email,
     profilePicUrl,
     hasResume,
+    resumeUrl,
     careerJourney,
     availabilityStatus,
     stats,
@@ -189,7 +189,6 @@ const AboutPage = () => {
 
   const displayName     = fullName || '';
   const displayHeadline = headline || '';
-  const apiBase = getApiBase();
   const displayBio      = bio
     ? bio.split('\n').map((item) => item.trim()).filter(Boolean)
     : [];
@@ -201,7 +200,7 @@ const AboutPage = () => {
   const displaySkillCategories = skillCategories;
   const displayExperiences    = experiences;
   const displayResumeHighlights = resumeHighlights;
-  const resumeHref = hasResume ? `${apiBase}/profile/resume?source=about` : null;
+  const resumeHref = hasResume && resumeUrl ? `${resumeUrl}?source=about` : null;
 
   useSeo({
     title: 'About',

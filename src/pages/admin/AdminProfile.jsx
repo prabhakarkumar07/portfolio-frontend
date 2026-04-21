@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { getApiBase, profileAPI } from "../../utils/api";
+import { profileAPI } from "../../utils/api";
 import useProfile from "../../hooks/useProfile";
 
 const accentOptions = [
@@ -1350,7 +1350,18 @@ const ProfilePicCard = ({ url, onUpload }) => {
 };
 
 // ── Resume Card ───────────────────────────────────────────────────────────────
-const ResumeCard = ({ url, hasResume, onUpload }) => {
+const formatFileSize = (sizeInBytes) => {
+  if (!sizeInBytes) return "";
+
+  const sizeInMb = sizeInBytes / (1024 * 1024);
+  if (sizeInMb >= 1) {
+    return `${sizeInMb.toFixed(2)} MB`;
+  }
+
+  return `${Math.max(1, Math.round(sizeInBytes / 1024))} KB`;
+};
+
+const ResumeCard = ({ url, fileName, fileSize, hasResume, onUpload }) => {
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -1430,8 +1441,13 @@ const ResumeCard = ({ url, hasResume, onUpload }) => {
               Resume uploaded ✓
             </p>
             <p className="text-xs text-emerald-600 dark:text-emerald-400 truncate mt-0.5 font-mono">
-              {url}
+              {fileName || url}
             </p>
+            {fileSize ? (
+              <p className="text-xs text-emerald-600/80 dark:text-emerald-400/80 mt-0.5">
+                {formatFileSize(fileSize)}
+              </p>
+            ) : null}
           </div>
           <div className="flex gap-2 shrink-0">
             <a
@@ -1527,8 +1543,10 @@ const ResumeCard = ({ url, hasResume, onUpload }) => {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 const AdminProfile = () => {
   const profile = useProfile();
-  const apiBase = getApiBase();
-  const resumeHref = profile.hasResume ? `${apiBase}/profile/resume?source=admin-profile` : "";
+  const resumeHref =
+    profile.hasResume && profile.resumeUrl
+      ? `${profile.resumeUrl}?source=admin-profile`
+      : "";
 
   return (
     <div className="max-w-3xl space-y-8">
@@ -1662,6 +1680,8 @@ const AdminProfile = () => {
       >
         <ResumeCard
           url={resumeHref}
+          fileName={profile.resumeName}
+          fileSize={profile.resumeSize}
           hasResume={profile.hasResume}
           onUpload={profile.refresh}
         />

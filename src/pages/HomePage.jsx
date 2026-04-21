@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ProjectCard from '../components/ProjectCard';
 import { CardSkeleton, ErrorMessage } from '../components/LoadingSpinner';
-import { getApiBase, projectsAPI } from '../utils/api';
+import { projectsAPI } from '../utils/api';
 import useFetch from '../hooks/useFetch';
 import useProfile from '../hooks/useProfile';
 import useSeo from '../hooks/useSeo';
@@ -43,6 +43,7 @@ const HomePage = () => {
     stats,
     profilePicUrl,
     hasResume,
+    resumeUrl,
     skillCategories,
   } = useProfile();
   const [imgError, setImgError] = React.useState(false);
@@ -50,8 +51,6 @@ const HomePage = () => {
   const displayHeadline = headline || '';
   const displayStats = stats.length > 0 ? stats : defaultStats;
   
-  const apiBase = getApiBase();
-
   const featuredProjects = data?.data || [];
   const derivedSkills = skillCategories.flatMap((category) =>
     (category.skills || [])
@@ -59,7 +58,7 @@ const HomePage = () => {
       .filter(Boolean)
   );
   const heroSkills = Array.from(new Set(derivedSkills)).slice(0, 10);
-  const resumeHref = hasResume ? `${apiBase}/profile/resume?source=home` : null;
+  const resumeHref = hasResume && resumeUrl ? `${resumeUrl}?source=home` : null;
 
   useSeo({
     title: 'Home',
