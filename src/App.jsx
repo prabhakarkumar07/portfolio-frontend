@@ -23,8 +23,6 @@ import ProtectedRoute from './components/admin/ProtectedRoute';
 import usePublicKeepAlive from './hooks/usePublicKeepAlive';
 
 const PublicLayout = () => {
-  usePublicKeepAlive();
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -46,6 +44,8 @@ const PublicLayout = () => {
 };
 
 function App() {
+  usePublicKeepAlive();
+
   return (
     <ThemeProvider>
       <AuthProvider>

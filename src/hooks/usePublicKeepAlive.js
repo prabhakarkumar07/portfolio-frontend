@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { healthAPI } from '../utils/api';
 
-const FIVE_MINUTES = 5 * 60 * 1000;
+const ONE_MINUTE = 60 * 1000;
 
 const pingBackend = () => healthAPI.ping().catch(() => {});
 
@@ -10,22 +10,16 @@ const usePublicKeepAlive = () => {
     pingBackend();
 
     const interval = window.setInterval(() => {
-      if (document.visibilityState === 'visible') {
-        pingBackend();
-      }
-    }, FIVE_MINUTES);
+      pingBackend();
+    }, ONE_MINUTE);
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        pingBackend();
-      }
-    };
+    const handleOnline = () => pingBackend();
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('online', handleOnline);
 
     return () => {
       window.clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('online', handleOnline);
     };
   }, []);
 };
